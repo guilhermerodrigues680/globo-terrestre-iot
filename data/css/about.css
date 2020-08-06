@@ -1,0 +1,12 @@
+header, footer {
+  background-color: #10a296;
+}
+
+.main-content__description {
+  text-align: justify;
+}
+
+.main-content__image {
+  width: 100%;
+  height: auto;
+}

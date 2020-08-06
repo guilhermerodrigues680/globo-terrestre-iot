@@ -1,0 +1,51 @@
+@import url(../vendor/Cesium-1.71/Build/Cesium/Widgets/widgets.css);
+@import url(../vendor/necolas-normalize-css/normalize.css);
+
+body, html {
+  width: 100%;
+  height: 100%;
+}
+
+#cesiumContainer {
+  /* position: relative; */
+  /* width: 100vw; */
+  /* height: 95vh; */
+  width: 90%;
+  height: 70%;
+}
+
+.contributors {
+  /* position: relative; */
+  /* height: 5vh; */
+}
+
+/*
+  ## Dispositivos Moveis
+*/
+
+@media only screen and (max-device-width : 414px) {
+  #cesiumContainer {
+    width: 100%;
+  }
+}
+
+
+/*
+  ## Iphone 6s
+*/
+
+/* @media only screen and (max-device-width : 375px) {
+  #cesiumContainer {
+    height: 80vh;
+  }
+} */
+
+/*
+  ## Android - Motorola
+*/
+
+/* @media only screen and (max-device-width : 320px) {
+  #cesiumContainer {
+    height: 50vh;
+  }
+} */

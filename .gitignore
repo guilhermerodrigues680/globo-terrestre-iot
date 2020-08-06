@@ -5,6 +5,8 @@
 .vscode/ipch
 
 .DS_Store
+server/node_modules
+scripts/node/node_modules
 
 # Dados sensiveis
 include/arduinoSecrets.h

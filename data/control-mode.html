@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.72/Build/Cesium/Cesium.js"></script>
+  <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.72/Build/Cesium/Widgets/widgets.css">
+  <link rel="stylesheet" href="vendor/necolas/normalize.css">
+  <link rel="stylesheet" href="css/control-mode.css">
+  <title>WebApp - Globo Terrestre</title>
+</head>
+<body>
+  <header>WebApp - Globo Terrestre</header>
+
+  <div class="search-box">
+    <input type="text" id="js-text-search" class="search-box__input" placeholder="Procurar cidade, estado, país ou continente">
+    <button id="js-btn-search" class="search-box__button">Buscar</button>
+  </div>
+
+  <div id="cesiumContainer" class="cesium-container"></div>
+
+  <footer>Autor: Guilherme Rodrigues</footer>
+  <div id="debug" style="display: none;"></div>
+
+  <!-- Scripts -->
+  <script src="js/control-mode.js" type="module"></script>
+</body>
+</html>

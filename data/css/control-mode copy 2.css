@@ -1,0 +1,67 @@
+@import url(../vendor/Cesium-1.71/Build/Cesium/Widgets/widgets.css);
+@import url(../vendor/necolas-normalize-css/normalize.css);
+
+body{
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content 1fr min-content;
+  grid-template-areas:
+  "header"
+  "main"
+  "footer";
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  background: #111111;
+}
+
+header {
+  grid-area: header;
+}
+
+main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+footer {
+  grid-area: footer;
+}
+
+header, footer {
+  font-size: large;
+  text-align: center;
+  padding: 0.3rem 0;
+}
+
+.search-box {
+  padding: 1vh 1vw 1vh 1vw;
+}
+
+.search-box input {
+  height: 100%;
+  margin: 0;
+  border: none;
+  height: 100%;
+  width: 40%;
+}
+
+.search-box button {
+  background-color: #0074D9;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  padding: 15px 32px;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.cesium-container {
+  height: 90%;
+}

@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css2?family=Mulish&display=swap);
+
 body {
   display: grid;
   grid-template-columns: 25vw 75vw;
@@ -6,12 +8,10 @@ body {
   "h h"
   "n m"
   "f f";
-  margin: 0;
-  padding: 0;
   min-height: 100vh;
   background: #fff;
   color: #4a4a4a;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Mulish', Arial, Helvetica, sans-serif;
 }
 
 header, footer {

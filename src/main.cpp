@@ -15,11 +15,11 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ArduinoOTA.h>
+#include <LittleFS.h>
 #include <AccelStepper.h>
 #include <Hash.h>
 #include <ArduinoJson.h>
 #include "arduinoSecrets.h"
-#include "staticHtmlPages.h"
 #include "StepperMotorGlobe.h"
 
 // Motor pin definitions:
@@ -33,6 +33,8 @@
 
 #define USE_SERIAL Serial
 
+// hostname para o mDNS
+const char* MDNS_ESP_HOSTNAME = "globo";
 
 ESP8266WiFiMulti WiFiMulti;
 ESP8266WebServer server(80);
@@ -53,6 +55,8 @@ void startServer();
 void startStepper();
 void startLedActivityIndicator();
 void loopLedActivityIndicator(uint16_t interval);
+String getContentType(String filename); // convert the file extension to the MIME type
+bool handleFileRead(String path);       // send the right file to the client (if it exists)
 
 void setup()
 {
@@ -70,9 +74,10 @@ void setup()
     }
 
     startWiFi();
+    startMDNS();
     startArduinoOTA();
     startWebSocket();
-    startMDNS();
+    LittleFS.begin(); // Start the SPI Flash Files System
     startServer();
     startStepper();
     startLedActivityIndicator();
@@ -83,7 +88,7 @@ void loop()
     webSocket.loop();
     server.handleClient();
     ArduinoOTA.handle();
-    // MDNS.update();
+    MDNS.update();
     loopLedActivityIndicator(1000);
 
     if(stepper.currentPosition() == 2048) {
@@ -110,22 +115,6 @@ void loop()
     // } else {
     //     // Nada
     // }
-}
-
-void teste()
-{
-    stepper.moveTo(4096);
-    // Run to position with set speed and acceleration:
-    stepper.runToPosition();
-
-    // delay(1000);
-
-    // Move back to original position:
-    stepper.moveTo(0);
-    // Run to position with set speed and acceleration:
-    stepper.runToPosition();
-
-    // delay(1000);
 }
 
 /**
@@ -282,125 +271,158 @@ void startWebSocket()
 
 void startMDNS()
 {
-    if(MDNS.begin("esp8266")) {
+    if(MDNS.begin(MDNS_ESP_HOSTNAME)) {
+        // Add service to MDNS
+        MDNS.addService("http", "tcp", 80);
+        MDNS.addService("ws", "tcp", 81);
         USE_SERIAL.println("MDNS responder started");
         USE_SERIAL.println("mDNS responder started: http://esp8266.local");
     } else {
         USE_SERIAL.println("MDNS responder not started!!!");
     }
-
-    // Add service to MDNS
-    MDNS.addService("http", "tcp", 80);
-    MDNS.addService("ws", "tcp", 81);
 }
 
 void startServer()
 {
-    // handle `default-page.css`
-    server.on("/default-page.css", []() {
-        server.send(200, "text/css", defaultPageCss);
-    });
-
-    // handle `index`
-    server.on("/", []() {
-        // send index.html
-        // server.send(200, "text/html", "<html><head><script>var connection = new WebSocket('ws://'+location.hostname+':81/', ['arduino']);connection.onopen = function () {  connection.send('Connect ' + new Date()); }; connection.onerror = function (error) {    console.log('WebSocket Error ', error);};connection.onmessage = function (e) {  console.log('Server: ', e.data);};function sendRGB() {  var r = parseInt(document.getElementById('r').value).toString(16);  var g = parseInt(document.getElementById('g').value).toString(16);  var b = parseInt(document.getElementById('b').value).toString(16);  if(r.length < 2) { r = '0' + r; }   if(g.length < 2) { g = '0' + g; }   if(b.length < 2) { b = '0' + b; }   var rgb = '#'+r+g+b;    console.log('RGB: ' + rgb); connection.send(rgb); }</script></head><body>LED Control:<br/><br/>R: <input id=\"r\" type=\"range\" min=\"0\" max=\"255\" step=\"1\" oninput=\"sendRGB();\" /><br/>G: <input id=\"g\" type=\"range\" min=\"0\" max=\"255\" step=\"1\" oninput=\"sendRGB();\" /><br/>B: <input id=\"b\" type=\"range\" min=\"0\" max=\"255\" step=\"1\" oninput=\"sendRGB();\" /><br/></body></html>");
-        server.send (200, "text/html", htmlIndexPage);
-    });
-
-    // handle `/status`
-    server.on("/status", []() {
-        // send status.html
-        server.send(200, "text/plain", MDNS.isRunning() ? "true" : "false");
-    });
-
-    // handle `/globe`
-    server.on("/globe", []() {
-        // redirect to the globe website
-        server.sendHeader("Location", String("https://guilhermerodrigues680.github.io/website-terrestrial-globe-with-esp8266/"), true);
-        server.send (302, "text/plain", "");
-    });
-
-    // handle `/config`
-    server.on("/config", []() {
-        // adjust global variables and send config.html
-        String message = "Number of args received:";
-        message += server.args();
-        for (int i = 0; i < server.args(); i++)
-        {
-            message += "Arg n:" + (String)i + " –> ";
-            message += server.argName(i) + ": ";
-            message += server.arg(i) + "\n";
-        }
-
-        if (server.arg("vel") == "")
-        {
-            message += "\nvel not found";
-        }
-        else
-        {
-            message += "\nvel found: ";
-            message += server.arg("vel");
-            stepper.setSpeed(server.arg("vel").toInt());
-        }
-
-        server.send (200, "text/plain", message);
-    });
-
-    // handle `/test`
-    server.on("/test", []() {
-        // do some test and send test.html
-        teste();
-        server.send (200, "text/plain", "Teste OK!");
-    });
-
     // handle `/coord`
     server.on("/coord", []() {
-        // send text with coordinates
-        String message = "";
-        message += "-- GLOBE --\n";
-        message += "Lat: " + (String)globe.getLat() + "\n";
-        message += "Lon: " + (String)globe.getLon() + "\n";
-        message += "Height: " + (String)globe.getHeight() + "\n";
-        message += "StepperPosition: " + (String)globe.getStepperPosition() + "\n";
-        message += "-- STEPPER --\n";
-        message += "currentPosition " + (String)stepper.currentPosition() + "\n";
-        message += "isRunning " + (String)stepper.isRunning() + "\n";
-        message += "distanceToGo " + (String)stepper.distanceToGo() + "\n";
-        message += "speed " + (String)stepper.speed() + "\n";
-        server.send (200, "text/plain", message);
+        // send json with coordinates
+        const size_t capacity = JSON_OBJECT_SIZE(2) + 2*JSON_OBJECT_SIZE(4) + 100;
+        DynamicJsonDocument doc(capacity);
+
+        JsonObject globeObj = doc.createNestedObject("globe");
+        globeObj["lat"] = globe.getLat();
+        globeObj["lon"] = globe.getLon();
+        globeObj["height"] = globe.getHeight();
+        globeObj["stepperPosition"] = globe.getStepperPosition();
+
+        JsonObject stepperObj = doc.createNestedObject("stepper");
+        stepperObj["currentPosition"] = stepper.currentPosition();
+        stepperObj["isRunning"] = stepper.isRunning();
+        stepperObj["distanceToGo"] = stepper.distanceToGo();
+        stepperObj["speed"] = stepper.speed();
+
+        String res;
+        serializeJson(doc, res);
+        server.send(200, "application/json", res);
     });
 
     // handle `center-globe`
-    server.on("/center-globe", []() {
-        if (server.arg("steps") != "") {
-            stepper.move(server.arg("steps").toInt());
-            stepper.runToPosition();
+    server.on("/center-globe", HTTP_POST, []() {
+        //Check if body received
+        if (server.hasArg("plain") == false)
+        {
+            const size_t capacity = JSON_OBJECT_SIZE(2) + 40;
+            DynamicJsonDocument doc(capacity);
+
+            doc["data"] = "Body not received";
+            doc["errorCode"] = 1;
+
+            String res;
+            serializeJson(doc, res);
+
+            server.sendHeader("Access-Control-Allow-Origin", "*");
+            server.send(400, "application/json", res);
         }
-        if (server.arg("center") != "") {
-            stepper.setCurrentPosition(0);
+        else
+        {
+            // --- BODY ---
+            const size_t capacityBody = JSON_OBJECT_SIZE(2) + 20;
+            DynamicJsonDocument bodyDoc(capacityBody);
+            // Parsing body
+            deserializeJson(bodyDoc, server.arg("plain"));
+            bool setCenter = bodyDoc["setCenter"];
+            int steps = bodyDoc["steps"];
+
+            // --- RESPONSE ---
+            String res;
+            const size_t capacityRes = JSON_OBJECT_SIZE(2) + 40;
+            DynamicJsonDocument resDoc(capacityRes);
+
+            if (setCenter && steps == 0)
+            {
+                stepper.setCurrentPosition(0);
+
+                resDoc["data"] = "setCenter: " + String(setCenter);
+                resDoc["errorCode"] = 0;
+                serializeJson(resDoc, res);
+                server.sendHeader("Access-Control-Allow-Origin", "*");
+                server.send(200, "application/json", res);
+            }
+            else if (steps != 0 && setCenter == false)
+            {
+                stepper.move(steps);
+                stepper.runToPosition();
+
+                resDoc["data"] = "steps: " + String(steps) + ", setCenter: " + String(setCenter);
+                resDoc["errorCode"] = 0;
+                serializeJson(resDoc, res);
+                server.sendHeader("Access-Control-Allow-Origin", "*");
+                server.send(200, "application/json", res);
+            }
+            else
+            {
+                resDoc["data"] = "Operacao invalida";
+                resDoc["errorCode"] = 1;
+                serializeJson(resDoc, res);
+                server.sendHeader("Access-Control-Allow-Origin", "*");
+                server.send(400, "application/json", res);
+            }
         }
-        server.send(200, "text/html", centerGlobePage);
     });
 
-    // handle `health`
+    // handle `/health`
     server.on("/health", []() {
-        const size_t capacity = JSON_OBJECT_SIZE(3) + 60;
-        String resJSON;
-        DynamicJsonDocument resHealth(capacity);
+        // https://arduinojson.org/v6/assistant/
+        const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 180;
+        DynamicJsonDocument doc(capacity);
 
-        resHealth["status"] = "OK";
-        resHealth["errorCode"] = 0;
-        resHealth["message"] = "";
-        serializeJson(resHealth, resJSON);
+        doc["status"] = "OK";
+        doc["errorCode"] = 0;
+
+        JsonObject data = doc.createNestedObject("data");
+        data["ssid"] = WiFi.SSID();
+        data["ip"] = WiFi.localIP().toString();
+        data["mDNSHostname"] = String(MDNS_ESP_HOSTNAME) + ".local";
+        data["mDNS"] = MDNS.isRunning();
+        data["hostname"] = WiFi.hostname();
+        data["macAddress"] = WiFi.macAddress();
+        data["chipId"] = "0x" + String(ESP.getChipId(), HEX);
+        data["msStarted"] = millis();
+
+        String res;
+        serializeJson(doc, res);
+
         server.sendHeader("Access-Control-Allow-Origin", "*");
-        server.send(200, "application/json", resJSON);
+        server.send(200, "application/json", res);
     });
 
-    // handle `/404`
+    // handle `/restart`
+    server.on("/restart", []() {
+        const size_t capacity = JSON_OBJECT_SIZE(2) + 40;
+        DynamicJsonDocument doc(capacity);
+
+        doc["status"] = "restarting";
+        doc["errorCode"] = 0;
+
+        String res;
+        serializeJson(doc, res);
+
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.send(200, "application/json", res);
+        delay(2000);
+        ESP.restart();
+    });
+
+    // Lida com uri's nao listados acima
     server.onNotFound([]() {
-        // server.send(404, "text/plain", "404: File Not Found");
-        server.send(404, "text/html", html404Page);
+        // Procura uma arquivo no Filesystem e envia se existir
+        // se não encontrar tenta enviar a pagina 404.html
+        // se não estiver disponivel a página envia uma mensagem 404 (Not Found)
+        if (handleFileRead(server.uri()) == false)
+        {
+            server.send(404, "text/plain", "404: Not Found - " + server.uri());
+        }
     });
 
     server.begin();
@@ -436,4 +458,52 @@ void loopLedActivityIndicator(uint16_t interval)
         digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
         digitalWrite(LED_BUILTIN_AUX, !digitalRead(LED_BUILTIN));
     }
+}
+
+// convert the file extension to the MIME type
+String getContentType(String filename) {
+    if (filename.endsWith(".html")) return "text/html";
+    else if (filename.endsWith(".css")) return "text/css";
+    else if (filename.endsWith(".js")) return "application/javascript";
+    else if (filename.endsWith(".ico")) return "image/x-icon";
+    return "text/plain";
+}
+
+// send the right file to the client (if it exists)
+bool handleFileRead(String path) {
+    const char* path404 = "/404.html";
+    USE_SERIAL.println("handleFileRead: " + path);
+
+    // If a folder is requested, send the index file
+    if (path.endsWith("/"))
+    {
+        path += "index.html";
+    }
+
+    // Get the MIME type
+    String contentType = getContentType(path);
+
+    // If the file exists
+    if (LittleFS.exists(path))
+    {
+        // Open it
+        File file = LittleFS.open(path, "r");
+        // And send it to the client
+        size_t sent = server.streamFile(file, contentType);
+        // Then close the file again
+        file.close();
+        return true;
+    } else if(LittleFS.exists(path404)) {
+        // Open it
+        File file404 = LittleFS.open(path404, "r");
+        // And send it to the client
+        size_t sent = server.streamFile(file404, "text/html");
+        // Then close the file again
+        file404.close();
+        return true;
+    }
+
+    // If the file doesn't exist, return false
+    USE_SERIAL.println("\tFile Not Found");
+    return false;
 }

@@ -1,0 +1,16 @@
+{
+  "name": "esp8266-globo-terrestre",
+  "version": "1.0.0",
+  "description": "Webserver em express",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

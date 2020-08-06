@@ -1,0 +1,31 @@
+#cesiumContainer {
+  position: relative;
+  width: 100vw;
+  height: 95vh;
+}
+
+.contributors {
+  position: relative;
+  height: 5vh;
+}
+
+
+/*
+  ## Iphone 6s
+*/
+
+@media only screen and (max-device-width : 375px) {
+  #cesiumContainer {
+    height: 80vh;
+  }
+}
+
+/*
+  ## Android - Motorola
+*/
+
+@media only screen and (max-device-width : 320px) {
+  #cesiumContainer {
+    height: 50vh;
+  }
+}
