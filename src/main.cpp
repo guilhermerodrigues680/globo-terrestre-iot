@@ -21,6 +21,8 @@
 #include <ArduinoJson.h>
 #include "arduinoSecrets.h"
 #include "StepperMotorGlobe.h"
+#include "RemoteLogging.h"
+#include "GlobeServer.h"
 
 // Motor pin definitions:
 #define IN1   D5   // IN1 on the ULN2003 driver. Is connected to NodeMCU pin D5
@@ -43,6 +45,7 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 // Initialize with pin sequence IN1-IN3-IN2-IN4 for using the AccelStepper library with 28BYJ-48 stepper motor:
 AccelStepper stepper = AccelStepper(8, IN1, IN3, IN2, IN4);
 Globe globe = Globe();
+RemoteLogging remLog;
 
 void teste();
 void readWSMessage(uint8_t *message);
@@ -169,6 +172,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
     break;
     case WStype_TEXT:
         USE_SERIAL.printf("[%u] get Text: %s\n", num, payload);
+        remLog.sendBufferPacket(payload, length);
         readWSMessage(payload);
 
         // send message to client
@@ -199,6 +203,7 @@ void startWiFi()
     USE_SERIAL.println("Ready");
     USE_SERIAL.print("IP address: ");
     USE_SERIAL.println(WiFi.localIP());
+    remLog.sendPacket(WiFi.localIP().toString());
 }
 
 void startArduinoOTA()
@@ -284,6 +289,9 @@ void startMDNS()
 
 void startServer()
 {
+    // Custom ESP8266WebServer RequestHandler
+    server.addHandler(new GlobeServer("/aboutss1"));
+
     // handle `/coord`
     server.on("/coord", []() {
         // send json with coordinates

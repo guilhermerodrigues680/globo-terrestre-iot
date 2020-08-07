@@ -1,0 +1,43 @@
+// AUTOMATICALLY GENERATED FILE. PLEASE DO NOT MODIFY IT MANUALLY
+
+// PIO Unified Debugger
+//
+// Documentation: https://docs.platformio.org/page/plus/debugging.html
+// Configuration: https://docs.platformio.org/page/projectconf/section_env_debug.html
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug",
+            "executable": "/Users/guilherme/Projetos/globo-esp8266-js/nodemcu-terrestrial-globe-with-esp8266/.pio/build/nodemcuv2/firmware.elf",
+            "toolchainBinDir": "/Users/guilherme/.platformio/packages/toolchain-xtensa/bin",
+            "preLaunchTask": {
+                "type": "PlatformIO",
+                "task": "Pre-Debug"
+            },
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (skip Pre-Debug)",
+            "executable": "/Users/guilherme/Projetos/globo-esp8266-js/nodemcu-terrestrial-globe-with-esp8266/.pio/build/nodemcuv2/firmware.elf",
+            "toolchainBinDir": "/Users/guilherme/.platformio/packages/toolchain-xtensa/bin",
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "name": "Launch UDP Server",
+            "program": "${workspaceFolder}/scripts/node/udp-server.js",
+            "cwd": "${workspaceFolder}/scripts/node",
+            "runtimeVersion": "12.18.2",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node"
+        }
+    ]
+}
