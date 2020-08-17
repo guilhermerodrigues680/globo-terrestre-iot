@@ -4,11 +4,13 @@
   "description": "Scripts Auxiliares",
   "main": "index.js",
   "scripts": {
+    "generate-docs-asyncapi": "./generate-docs-asyncapi.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@asyncapi/generator": "^1.0.0-rc.9",
     "ip": "^1.1.5"
   }
 }

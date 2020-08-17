@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="vendor/necolas/normalize.css">
   <link rel="stylesheet" href="css/default-page.css">
+
+  <style>
+    header, footer {
+      background-color: #10a296;
+    }
+  </style>
+
   <title>Globo Terrestre - Ajuste de centro</title>
 </head>
 <body>
@@ -12,17 +19,52 @@
 
   <main>
     <h1>Ajustando centro do globo</h1>
-    <p>Latitude 0 e longitude 0 - Ilha Nula</p>
-    <p><a href="http://192.168.2.108/center-globe?steps=10">Girar++</a></p>
-    <p><a href="http://192.168.2.108/center-globe?steps=-10">Girar--</a></p>
-    <p><a href="http://192.168.2.108/center-globe?center=1">Confirmar Centro</a></p>
+    <p>Use os comandos para posicionar o Globo na Latitude 0º e longitude 0º - <a href="https://en.wikipedia.org/wiki/Null_Island" target="_blank">Null Island</a>.</p>
+    <p>Com o Globo posicionado, pressione o botão para confirmar a posição central do Globo.</p>
+
+    <div id="inputs-steps">
+      <div>
+        <label>
+          <input type="radio" name="steps-radio" value="50" checked/>
+          Passo Curto
+        </label>
+        <label>
+          <input type="radio" name="steps-radio" value="250"/>
+          Passo Médio
+        </label>
+        <label>
+          <input type="radio" name="steps-radio" value="500"/>
+          Passo Longo
+        </label>
+      </div>
+      <div>
+        <label>
+          <input type="radio" name="steps-radio" value="custom"/>
+          Personalizado
+        </label>
+        <input type="number" min="1" placeholder="Ex: 350"/>
+      </div>
+    </div>
+
+    <button id="button-increment">Girar++</button>
+    <button id="button-decrement">Girar--</button>
+    <button id="button-set-center">Confirmar Centro</button>
+    <div id="container-coordinates"></div>
+    <button id="button-refresh-coordinates">Atualizar Coordenadas</button>
   </main>
 
   <nav>
-    <h4>Paginas</h4>
-    <p>Globo Terrestre - Web App</p>
+    <h4>Páginas</h4>
+    <p><a href="index.html">Página Inicial</a></p>
+    <p><a href="about.html">Sobre</a></p>
+    <p><a href="openapi/index.html">Documentação API (Online)</a></p>
+    <p><a href="asyncapi/index.html">Documentação WebSocket</a></p>
+    <p><a href="/restart-shutdown.html">Reiniciar/Desligar o sistema</a></p>
   </nav>
 
   <footer>Autor: Guilherme Rodrigues</footer>
+
+  <script src="vendor/axios/axios.min.js"></script>
+  <script src="js/center-globe.js" type="module"></script>
 </body>
 </html>

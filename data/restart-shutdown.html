@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="vendor/necolas/normalize.css">
+  <link rel="stylesheet" href="css/default-page.css">
+
+  <style>
+    header, footer {
+      background-color: #10a296;
+    }
+  </style>
+
+  <title>Globo Terrestre - Reiniciar/Desligar</title>
+</head>
+<body>
+  <header>Globo Terrestre IoT - Web App + ESP8266</header>
+
+  <main>
+    <h1>Reiniciar/Desligar o sistema</h1>
+    <ul>
+      <li>Reiniciar: O Globo irá retornar para a origem e o sistema será reinciado.</li>
+      <li>Desligar: O Globo irá retornar para a origem e o sistema será reinciado.</li>
+    </ul>
+
+    <button id="button-restart">Reiniciar</button>
+    <button id="button-shutdown">Desligar</button>
+
+    <div id="container-error"></div>
+  </main>
+
+  <nav>
+    <h4>Páginas</h4>
+    <p><a href="index.html">Página Inicial</a></p>
+    <p><a href="center-globe.html">Centralizar Motor do Globo</a></p>
+    <p><a href="about.html">Sobre</a></p>
+    <p><a href="openapi/index.html">Documentação API (Online)</a></p>
+    <p><a href="asyncapi/index.html">Documentação WebSocket</a></p>
+  </nav>
+
+  <footer>Autor: Guilherme Rodrigues</footer>
+
+  <script src="vendor/axios/axios.min.js"></script>
+  <script src="js/restart-shutdown.js" type="module"></script>
+</body>
+</html>

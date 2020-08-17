@@ -1,0 +1,73 @@
+asyncapi: 2.0.0
+info:
+  title: Globo Terrestre IoT
+  version: 1.0.0
+  description: |
+    [Página Inicial](/)
+
+    Documentação do WebSocket implementado no ESP8266 no padrão AsyncAPI 2.0.
+
+    Para a documentação da API implementada no ESP8266 no padrão OpenAPI 3.0, acesse aqui: [/openapi](/openapi/index.html)
+
+    **OBS:** _mDNS é compatível com Windows, OSX, Linux e iOS, mas não com Android._
+
+servers:
+  mDNS:
+    url: 'ws://globo.local:81'
+    protocol: ws
+    description: Conexão usando mDNS
+  ipLocal:
+    url: 'ws://192.168.2.108:81'
+    protocol: ws
+    description: Conexão usando IP Local
+
+defaultContentType: application/json
+
+channels:
+  /:
+    publish:
+      message:
+        $ref: '#/components/messages/coordinatesPubMessage'
+    subscribe:
+      message:
+        $ref: '#/components/messages/coordinatesSubMessage'
+
+components:
+  messages:
+    coordinatesPubMessage:
+      summary: Evento transmitido ao servidor pela conexão WebSocket.
+      payload:
+        description: Coordenadas para o Globo Terrestre
+        additionalProperties: false
+        type: object
+        properties:
+          lat:
+            type: number
+            description: Latitude
+          lon:
+            type: number
+            description: Longitude
+          height:
+            type: integer
+            description: Altitude
+        example:
+            lat: 51.247
+            lon: -160.853
+            height: 20000
+
+    coordinatesSubMessage:
+      summary: Primeiro evento recebido após a conexão WebSocket.
+      payload:
+        description: Resposta de conexão bem sucedida.
+        additionalProperties: false
+        type: object
+        properties:
+          op:
+            type: string
+            enum:
+              - connect
+          data:
+            type: string
+        example:
+          op: connect
+          data: Conexão estabelecida com Globo Terrestre IoT

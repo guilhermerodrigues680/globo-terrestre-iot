@@ -3,17 +3,15 @@
   Created by Guilherme Rodrigues, guilhermerodrigues680, August, 2020.
 */
 #include <WiFiUdp.h>
-#include "RemoteLogging.h"
+#include "remoteLogging.h"
 
-RemoteLogging::RemoteLogging()
-    : _udp() // initializer list
-{
-    //Cria um objeto da classe UDP.
-    // WiFiUDP _udp;)
-    // _udp = WiFiUDP();
-}
+namespace remoteLogging {
 
-void RemoteLogging::sendPacket(String msg) {
+const char* _udp_server_addr = "192.168.2.104";
+const int _udp_server_port = 2222;
+WiFiUDP _udp;
+
+void sendPacket(String msg) {
     // Inicializa o pacote de transmissao ao IP e PORTA.
     // Adiciona-se o valor ao pacote
     // Finaliza o pacote e envia.
@@ -22,14 +20,16 @@ void RemoteLogging::sendPacket(String msg) {
     _udp.endPacket();
 }
 
-void RemoteLogging::sendPacket(const char *msg) {
+void sendPacket(const char *msg) {
     _udp.beginPacket(_udp_server_addr, _udp_server_port);
     _udp.write(msg);
     _udp.endPacket();
 }
 
-void RemoteLogging::sendBufferPacket(uint8_t *msg, size_t length) {
+void sendBufferPacket(uint8_t *msg, size_t length) {
     _udp.beginPacket(_udp_server_addr, _udp_server_port);
     _udp.write(msg, length);
     _udp.endPacket();
+}
+
 }

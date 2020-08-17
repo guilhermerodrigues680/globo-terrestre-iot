@@ -1,0 +1,57 @@
+# /health
+
+get:
+  summary: Retorna o estado do servidor do ESP8266.
+  description: Retorna o estado do servidor do ESP8266.
+  responses:
+    '200':
+      description: Um objeto JSON
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Resposta'
+          example: |-
+            {
+              "status": "OK",
+              "errorCode": 0,
+              "data": {
+                "ssid": "R1001",
+                "ip": "192.168.2.108",
+                "mDNSHostname": "globo.local",
+                "mDNS": true,
+                "hostname": "ESP-5F49BD",
+                "macAddress": "DC:4F:22:5F:49:BD",
+                "chipId": "0x5f49bd",
+                "msStarted": 805671
+              }
+            }
+
+components:
+  schemas:
+    Resposta:
+      type: object
+      properties:
+        status:
+          type: string
+        errorCode:
+          type: integer
+        data:
+          type: object
+          properties:
+            ssid:
+              type: string
+            ip:
+              type: string
+            mDNSHostname:
+              type: string
+            mDNS:
+              type: boolean
+            hostname:
+              type: string
+            macAddress:
+              type: string
+            chipId:
+              type: string
+            msStarted:
+              type: integer
+

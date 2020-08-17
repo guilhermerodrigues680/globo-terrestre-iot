@@ -7,7 +7,7 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[data/**.{html,css,js,json}]
+[data/**.{html,css,js,json,yaml}]
 indent_size = 2
 
 [scripts/node/**.{js,json}]
