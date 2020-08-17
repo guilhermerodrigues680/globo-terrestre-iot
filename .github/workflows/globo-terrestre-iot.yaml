@@ -29,10 +29,10 @@ jobs:
         tree
       shell: bash
 
-      - name: Criar arquivo de credenciais de rede Wi-Fi
-        run: |
-          cp -rpv include/globeSecrets.h.example include/globeSecrets.h
-        shell: bash
+    - name: Criar arquivo de credenciais de rede Wi-Fi
+      run: |
+        cp -rpv include/globeSecrets.h.example include/globeSecrets.h
+      shell: bash
 
     - name: Install and Update platformio
       run: |
