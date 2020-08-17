@@ -22,12 +22,17 @@ jobs:
         python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
 
-    - name: Criar arquivo de credenciais de rede Wi-Fi
+    - name: Listar conteúdo
       run: |
         pwd
-        ls -l
-        cp -rp include/globeSecrets.h.example include/globeSecrets.h
+        ls -lah
+        tree
       shell: bash
+
+      - name: Criar arquivo de credenciais de rede Wi-Fi
+        run: |
+          cp -rpv include/globeSecrets.h.example include/globeSecrets.h
+        shell: bash
 
     - name: Install and Update platformio
       run: |
