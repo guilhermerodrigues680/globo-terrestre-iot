@@ -1,0 +1,55 @@
+# /coord
+
+get:
+  summary: Retorna as coordenadas do globo terrestre e do motor de passos.
+  description: Retorna as coordenadas do globo terrestre e do motor de passos.
+  responses:
+    '200':
+      description: Um objeto JSON
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Resposta'
+          example: |-
+            {
+              "globe": {
+                "lat": 0,
+                "lon": 0,
+                "height": 0,
+                "stepperPosition": 0
+              },
+              "stepper": {
+                "currentPosition": 0,
+                "isRunning": false,
+                "distanceToGo": 0,
+                "speed": 0
+              }
+            }
+
+components:
+  schemas:
+    Resposta:
+      type: object
+      properties:
+        globe:
+          type: object
+          properties:
+            lat:
+              type: integer
+            lon:
+              type: integer
+            height:
+              type: integer
+            stepperPosition:
+              type: integer
+        stepper:
+          type: object
+          properties:
+            currentPosition:
+              type: integer
+            isRunning:
+              type: boolean
+            distanceToGo:
+              type: integer
+            speed:
+              type: integer

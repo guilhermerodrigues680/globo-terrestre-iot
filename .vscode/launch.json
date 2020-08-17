@@ -27,17 +27,6 @@
             "executable": "/Users/guilherme/Projetos/globo-esp8266-js/nodemcu-terrestrial-globe-with-esp8266/.pio/build/nodemcuv2/firmware.elf",
             "toolchainBinDir": "/Users/guilherme/.platformio/packages/toolchain-xtensa/bin",
             "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "name": "Launch UDP Server",
-            "program": "${workspaceFolder}/scripts/node/udp-server.js",
-            "cwd": "${workspaceFolder}/scripts/node",
-            "runtimeVersion": "12.18.2",
-            "request": "launch",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "pwa-node"
         }
     ]
 }

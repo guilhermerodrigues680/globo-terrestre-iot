@@ -7,6 +7,8 @@
 .DS_Store
 server/node_modules
 scripts/node/node_modules
+scripts/html-template
+scripts/node/asyncapi-docs
 
 # Dados sensiveis
-include/arduinoSecrets.h
+include/globeSecrets.h

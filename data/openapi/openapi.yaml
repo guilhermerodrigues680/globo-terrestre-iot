@@ -1,0 +1,40 @@
+openapi: 3.0.0
+info:
+  title: Globo Terrestre IoT
+  version: 1.0.0
+  description: |
+    [Página Inicial](/)
+
+    Documentação da API implementada no ESP8266 no padrão OpenAPI 3.0.
+
+    Para a documentação do WebSocket implementado no ESP8266 no padrão AsyncAPI 2.0, acesse aqui: [/asyncapi](/asyncapi/index.html)
+
+    **OBS:** _mDNS é compatível com Windows, OSX, Linux e iOS, mas não com Android._
+
+  license:
+    name: MIT License
+    url: https://github.com/guilhermerodrigues680/globo-terrestre-iot/blob/master/LICENSE.md
+    # url: https://opensource.org/licenses/mit-license.php
+
+externalDocs:
+  url: 'https://github.com/guilhermerodrigues680/globo-terrestre-iot'
+  description: Globo Terrestre IoT - Repositório GitHub
+
+servers:
+  - url: 'http://globo.local'
+    description: mDNS
+  - url: 'http://192.168.2.108'
+    description: IP Local
+
+paths:
+  /health:
+    $ref: 'health.yaml'
+  /coord:
+    $ref: 'coord.yaml'
+  /center-globe:
+    $ref: 'center-globe.yaml'
+  /restart:
+    $ref: 'restart.yaml'
+tags:
+  - name: default
+    description: Rotas da API do Globo Terrestre IoT

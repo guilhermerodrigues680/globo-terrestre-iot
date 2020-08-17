@@ -1,0 +1,34 @@
+# /center-globe
+
+post:
+  summary: Gira o globo terrestre livremente para definir o centro (longitude 0º).
+  description: Gira o globo terrestre livremente para definir o centro (longitude 0º).
+  requestBody:
+    description: ola
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            steps:
+              type: number
+            setCenter:
+              type: boolean
+          example:
+            steps: 100
+            setCenter: false
+  responses:
+    '200':
+      description: Um objeto JSON confirmando a ação solicitada.
+      content:
+        application/json:
+          examples:
+            Confirmando centro:
+              value:
+                data: 'setCenter: 1'
+                errorCode: 0
+            Girando globo:
+              value:
+                data: 'steps: 100, setCenter: 0'
+                errorCode: 0

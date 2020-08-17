@@ -1,0 +1,32 @@
+# /restart
+
+get:
+  summary: Retorna o globo terrestre para a posição zero e reinicia o ESP8266.
+  description: Retorna o globo terrestre para a posição zero e reinicia o ESP8266.
+  responses:
+    '200':
+      description: Um objeto JSON
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Resposta'
+          examples:
+            jsonObject:
+              summary: Retorno Sucesso
+              value: |-
+                {
+                  "status": "restarting",
+                  "errorCode": 0
+                }
+
+components:
+  schemas:
+    Resposta:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Mensagem de status.
+        errorCode:
+          type: integer
+          description: Codigo igual a 0 indica sucesso e diferente de 0 indica erros.
