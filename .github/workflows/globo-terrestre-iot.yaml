@@ -26,7 +26,7 @@ jobs:
       run: |
         pwd
         ls -lah
-        apt-get -qq -y install tree
+        sudo apt-get -qq -y install tree
         tree
       shell: bash
 
