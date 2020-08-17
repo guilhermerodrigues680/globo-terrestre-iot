@@ -1,0 +1,30 @@
+name: Globo Terrestre IoT - CI
+
+# Trigger the workflow on push or pull request
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '2.7'
+
+    - name: Display the path
+      run: |
+        echo $(pwd)
+        echo $(ls -l)
+      shell: bash
+
+    - name: Install and Update platformio
+      run: |
+        pip install -U platformio
+        platformio update
+
+    - name: Run a paltformio
+      run: platformio run
