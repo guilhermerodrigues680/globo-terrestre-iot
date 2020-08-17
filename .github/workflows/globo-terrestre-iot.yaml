@@ -26,6 +26,7 @@ jobs:
       run: |
         pwd
         ls -lah
+        apt-get install -qq tree
         tree
       shell: bash
 
