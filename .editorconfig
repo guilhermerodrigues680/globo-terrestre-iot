@@ -12,3 +12,6 @@ indent_size = 2
 
 [scripts/node/**.{js,json}]
 indent_size = 2
+
+[.github/workflows/**.yaml]
+indent_size = 2
