@@ -4,6 +4,7 @@
 #include "ledActivityIndicator.h"
 #include "globeGlobalSettings.h"
 #include "globeStepperMotor.h"
+#include "remoteLogging.h"
 
 namespace globeOTA {
 
@@ -36,14 +37,28 @@ void start()
             type = "filesystem";
         }
 
+        remoteLogging::sendPacket("ArduinoOTA Start, tipo: " + type);
+
         // NOTE: if updating FS this would be the place to unmount FS using FS.end()
         USE_SERIAL.println("Start updating " + type);
     });
     ArduinoOTA.onEnd([]() {
+        remoteLogging::sendPacket("ArduinoOTA End");
         USE_SERIAL.println("\nEnd");
     });
     ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+        static unsigned int lastPercent = 100;
+        unsigned int currentPercent = (progress / (total / 100));
+
+        if (currentPercent != lastPercent && currentPercent % 10 == 0)
+        {
+            lastPercent = currentPercent;
+            // remoteLogging::sendPacket("Progress: " + String((progress / (total / 100))));
+            remoteLogging::sendPacket("Progress: " + String(progress) + " bytes de " + String(total) + " bytes |" + String(currentPercent) + "%");
+        }
+
         USE_SERIAL.printf("Progress: %u%%\r", (progress / (total / 100)));
+
         ledActivityIndicator::loop(50);
     });
     ArduinoOTA.onError([](ota_error_t error) {

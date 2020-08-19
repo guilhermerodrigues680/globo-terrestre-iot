@@ -4,36 +4,22 @@
 
 GlobeMiddleware::GlobeMiddleware(const char* uri)
 {
-    remoteLogging::sendPacket("Iniciado");
+
 }
 
 bool GlobeMiddleware::_canHandle(HTTPMethod method, String uri) {
-    remoteLogging::sendPacket("_canHandle: " + String(method) + " - " + uri);
-    // return false;
+    remoteLogging::sendPacket("REQ.: METODO: " + String(method) + " - URI: " + uri);
+    return false;
 
     // if (method != HTTP_GET || uri != _uri) {
     //     return false;
     // }
 
-    if (method != HTTP_OPTIONS) {
-        return false;
-    }
-
-    return true;
+    // return true;
 }
 
 bool GlobeMiddleware::_handle(ESP8266WebServer& server, HTTPMethod requestMethod, String requestUri) {
-    remoteLogging::sendPacket("handle 0");
-
-    if (requestMethod == HTTP_OPTIONS) {
-        remoteLogging::sendPacket("Preflight request HTTP_OPTIONS");
-        server.sendHeader("Access-Control-Allow-Origin", "*");
-        server.sendHeader("Access-Control-Max-Age", "86400");
-        server.sendHeader("Access-Control-Allow-Methods", "PUT,POST,GET,OPTIONS");
-        server.sendHeader("Access-Control-Allow-Headers", "*");
-        server.send(204);
-        return true;
-    }
+    remoteLogging::sendPacket("GlobeMiddleware::_handle");
 
     return false;
 

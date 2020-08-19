@@ -22,7 +22,8 @@ void start()
     USE_SERIAL.println("Ready");
     USE_SERIAL.print("IP address: ");
     USE_SERIAL.println(WiFi.localIP());
-    remoteLogging::sendPacket(WiFi.localIP().toString());
+
+    remoteLogging::sendPacket("Globo Terrestre IoT iniciado! IP: " + WiFi.localIP().toString());
 }
 
 }

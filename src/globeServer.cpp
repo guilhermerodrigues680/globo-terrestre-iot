@@ -3,12 +3,14 @@
 #include <ArduinoJson.h>
 #include "globeServer.h"
 #include "GlobeMiddleware.h"
+#include "GlobePreflight.h"
 #include "globeStepperMotor.h"
 #include "globeMDNS.h"
 #include "globeLittleFS.h"
 #include "globeGlobalSettings.h"
 #include "globeStepperMotor.h"
 #include "globeCoordinates.h"
+#include "remoteLogging.h"
 
 namespace globeServer {
 
@@ -76,11 +78,13 @@ bool handleFileRead(String path) {
         size_t sent = server.streamFile(file404, "text/html");
         // Then close the file again
         file404.close();
+        remoteLogging::sendPacket("Not Found - enviado 404.html");
         return true;
     }
 
     // If the file doesn't exist, return false
     USE_SERIAL.println("\tFile Not Found");
+    remoteLogging::sendPacket("Not Found - nao encontrado 404.html");
     return false;
 }
 
@@ -198,6 +202,7 @@ void notFoundHandle() {
 
 void start() {
     server.addHandler(new GlobeMiddleware("")); // Custom ESP8266WebServer RequestHandler
+    server.addHandler(new GlobePreflight("")); // Lida com as requisicoes Preflight
     server.on("/coord", coordHandle); // handle `/coord`
     server.on("/center-globe", HTTP_POST, centerGlobeHandle); // handle `center-globe`
     server.on("/health", healthHandle); // handle `/health`

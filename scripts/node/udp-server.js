@@ -3,6 +3,7 @@ const udp = require('dgram');
 const ip = require('ip');
 
 const PORT = 2222;
+const liteLog = true; // `true` para o log simplificado e `false` para o log completo
 const server = udp.createSocket('udp4'); // creating a udp server
 
 process.on('SIGINT', () => {
@@ -27,7 +28,12 @@ server.on('message', (msg, rinfo) => {
   const size = msg.length;
   const msgStr = JSON.stringify(msg.toString());
 
-  console.log(`${date} [${rAddr}:${rPort}]->[${ipAddr}:${PORT}] (${size} bytes): ${msgStr}`);
+  if (liteLog) {
+    const time = new Date().toLocaleTimeString()
+    console.log(`(${time}): ${msgStr}`);
+  } else {
+    console.log(`${date} [${rAddr}:${rPort}]->[${ipAddr}:${PORT}] (${size} bytes): ${msgStr}`);
+  }
 
   //sending msg
   // server.send(msg, rinfo.port, ip.address(), (error) => {
